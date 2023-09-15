@@ -5,8 +5,8 @@ set -o pipefail
 set -o nounset
 
 #variables
-usname="usmanmughalji"
-ghmail="usmanmughalji@gmail.com"
+usname="shafqatjan"
+ghmail="shafqatjan86@gmail.com"
 
 sudo chmod +x run.py && python3 run.py
 
