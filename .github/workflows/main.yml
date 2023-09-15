@@ -1,0 +1,25 @@
+name: Daraz (PK) Product Hunting
+
+on:
+  push:
+    tags:
+      - '*'
+  #Cronjob is scheduled for every day at 02:00 PM (Pakistan Standard Time)
+  #With the help of following site we can easily convert Universal Time Coordinated (UTC) to Pakistan Standard Time (PKT)
+  #https://savvytime.com/converter/utc-to-pkt
+  #I have set time to 08:50 AM (UTC) which is 1:50 PM in Pakistan Standard Time
+  #Set time 10 minutes always before actual time we have set for cronjob, because of delay in github triggering schedule officially
+  schedule:
+    - cron: "50 08 * * *"
+  #workflow_dispatch always add after schedule for proper working of cronjob schedule
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v3
+      - name: Product Hunting
+        run: |
+          sudo chmod +x daraz.sh && ./daraz.sh
