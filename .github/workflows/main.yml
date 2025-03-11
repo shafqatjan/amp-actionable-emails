@@ -4,22 +4,27 @@ on:
   push:
     tags:
       - '*'
-  #Cronjob is scheduled for every day at 02:00 PM (Pakistan Standard Time)
-  #With the help of following site we can easily convert Universal Time Coordinated (UTC) to Pakistan Standard Time (PKT)
-  #https://savvytime.com/converter/utc-to-pkt
-  #I have set time to 08:50 AM (UTC) which is 1:50 PM in Pakistan Standard Time
-  #Set time 10 minutes always before actual time we have set for cronjob, because of delay in github triggering schedule officially
+  # Cronjob scheduled for every day at 02:00 PM (Pakistan Standard Time)
+  # Equivalent to 08:50 AM UTC
   schedule:
-    - cron: "50 08 * * *"
-  #workflow_dispatch always add after schedule for proper working of cronjob schedule
-  workflow_dispatch:
-  
+    - cron: "50 08 * * 1-5"  # Runs only Monday to Friday
+  workflow_dispatch:  # Allows manual trigger
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Check if today is a weekday (for manual runs)
+        run: |
+          DAY_OF_WEEK=$(date +%u)
+          if [ "$DAY_OF_WEEK" -gt 5 ]; then
+            echo "It's a weekend. Exiting workflow."
+            exit 1
+          fi
+
       - name: Clone Repo
         uses: actions/checkout@v3
+
       - name: Product Hunting
         run: |
           sudo chmod +x daraz.sh && ./daraz.sh
